@@ -1,32 +1,12 @@
 import { NativeTabs } from 'expo-router/native-tabs';
-import { useColorScheme } from 'react-native';
-
-import { Colors } from '@/constants/theme';
-
+import { useTheme } from '@/hooks/use-theme';
 export default function AppTabs() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'dark' ? 'dark' : 'light'];
-
-  return (
-    <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
-      <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
-      </NativeTabs.Trigger>
-    </NativeTabs>
-  );
+  const t = useTheme();
+  // SDK 58 exposes the host appearance here; iOS 26+ draws its own tab material.
+  return <NativeTabs unstable_nativeProps={{ colorScheme: 'dark' }} backgroundColor={t.backgroundElement} tintColor={t.accent} labelStyle={{ default: { color: t.textSecondary }, selected: { color: t.accent } }} iconColor={{ default: t.textSecondary, selected: t.accent }} indicatorColor={t.backgroundSelected}>
+    <NativeTabs.Trigger name="index"><NativeTabs.Trigger.Label>Today</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon sf="sun.max" md="today" /></NativeTabs.Trigger>
+    <NativeTabs.Trigger name="tasks"><NativeTabs.Trigger.Label>Tasks</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon sf="checklist" md="checklist" /></NativeTabs.Trigger>
+    <NativeTabs.Trigger name="focus"><NativeTabs.Trigger.Label>Focus</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon sf="timer" md="timer" /></NativeTabs.Trigger>
+    <NativeTabs.Trigger name="review"><NativeTabs.Trigger.Label>Review</NativeTabs.Trigger.Label><NativeTabs.Trigger.Icon sf="moon" md="nightlight" /></NativeTabs.Trigger>
+  </NativeTabs>;
 }

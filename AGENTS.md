@@ -102,3 +102,46 @@ Plugins provide skills or tools. Do not install or connect them unless the user 
 - Do not expose secrets, credentials, or private environment data.
 - Before finishing instruction edits, review for contradictions, unsupported platform assumptions, and unnecessary duplication or conflicts with higher-priority rules.
 - Report changed files, main behavior or guardrails, verification actually performed, and material limitations. Do not claim unrun checks passed.
+## Safety rules for AI coding in this project
+
+Use these rules whenever you make or propose code changes.
+
+### Do not change without explicit approval
+
+Stop and explain the proposed change before editing any of these:
+
+- Secrets, credentials, signing certificates, tokens, or `.env` files.
+- Authentication, authorization, session handling, or backend access controls.
+- Payments, subscriptions, purchase validation, or entitlement logic.
+- Collection, storage, transmission, logging, or deletion of personal or sensitive data.
+- iOS or Android permissions, entitlements, signing settings, build profiles, or native configuration.
+- Dependencies that add native code, run install scripts, or involve major version upgrades.
+- Database schemas, migrations, production data, destructive scripts, or broad file deletion.
+- Release settings, production environment configuration, app store submissions, or over-the-air updates.
+
+For these areas, first describe:
+1. What needs to change and why.
+2. Which files and systems are affected.
+3. The security, privacy, data-loss, compatibility, or release risks.
+4. How to review, test, and roll back the change.
+
+Wait for explicit approval before proceeding.
+
+### Always follow these practices
+
+- Never put secrets in source code, prompts, logs, app bundles, or committed files. Use the project’s approved secret-management approach.
+- Do not treat client-side checks as security controls. Enforce authorization and sensitive business rules on the server.
+- Do not add analytics, tracking, permissions, or data collection unless the task requires it and the data flow is clear.
+- Prefer small, focused changes. Do not rewrite unrelated files or perform broad cleanup as part of a feature.
+- Before changing a dependency, explain why it is needed and check its Expo, React Native, and platform compatibility.
+- Preserve existing behavior unless the request clearly calls for changing it.
+- Never publish, deploy, submit, or release the app unless explicitly asked.
+- Do not claim a change was tested unless you actually ran the relevant checks. Report checks that could not be run.
+
+### For every coding task
+
+1. Inspect the relevant files and follow existing project conventions.
+2. Summarize the intended change before making high-impact edits.
+3. Keep changes limited to the requested scope.
+4. After editing, summarize changed files, notable risks, and checks performed.
+5. Flag any assumptions or unresolved issues clearly.

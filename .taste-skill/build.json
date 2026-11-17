@@ -1,0 +1,11 @@
+{
+ "page": "dist/index.html",
+ "url": null,
+ "root": "dist",
+ "kind": "software",
+ "category": "personal work planner",
+ "primary": "Add task",
+ "rounds": 3,
+ "start": "2026-11-17T03:51:06.354Z",
+ "by": "gate.mjs --start"
+}
