@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="432dp" android:height="432dp"
+    android:viewportWidth="432" android:viewportHeight="432">
+    <!-- Artwork stays inside the central 288dp circle, including the pulse. -->
+    <group android:name="logo" android:pivotX="216" android:pivotY="216">
+        <group android:translateX="114" android:translateY="114">
+            <path android:pathData="M40,0 H84 Q100,0 100,16 V48 C100,77 77,100 48,100 H16 Q0,100 0,84 V40 C0,18 18,0 40,0 Z">
+                <aapt:attr name="android:fillColor">
+                    <gradient android:startX="0" android:startY="0" android:endX="100" android:endY="100" android:startColor="#A93443" android:endColor="#B9434A" android:type="linear" />
+                </aapt:attr>
+            </path>
+            <group android:translateX="104">
+                <path android:pathData="M20,0 H52 L100,48 V84 Q100,100 84,100 H52 C23,100 0,77 0,48 V20 Q0,0 20,0 Z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient android:startX="0" android:startY="0" android:endX="100" android:endY="100" android:startColor="#E46968" android:endColor="#DF6867" android:type="linear" />
+                    </aapt:attr>
+                </path>
+                <path android:fillColor="#AE3945" android:pathData="M52,0 V32 Q52,48 68,48 H100 Z" />
+            </group>
+            <group android:translateY="104">
+                <path android:pathData="M16,0 H48 C77,0 100,23 100,52 V84 Q100,100 84,100 H40 C18,100 0,82 0,60 V16 Q0,0 16,0 Z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient android:startX="0" android:startY="0" android:endX="100" android:endY="100" android:startColor="#E46968" android:endColor="#DF6867" android:type="linear" />
+                    </aapt:attr>
+                </path>
+            </group>
+            <group android:translateX="104" android:translateY="104">
+                <path android:pathData="M52,0 H84 Q100,0 100,16 V60 C100,82 82,100 60,100 H16 Q0,100 0,84 V52 C0,23 23,0 52,0 Z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient android:startX="0" android:startY="0" android:endX="100" android:endY="100" android:startColor="#A93443" android:endColor="#B9434A" android:type="linear" />
+                    </aapt:attr>
+                </path>
+            </group>
+        </group>
+    </group>
+</vector>

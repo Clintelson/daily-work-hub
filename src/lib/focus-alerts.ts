@@ -1,3 +1,4 @@
+import { ensureNotificationAccess } from "./notification-access";
 import * as Notifications from "expo-notifications";
 import { Platform, Vibration } from "react-native";
 import { deriveFocus, type FocusSession } from "./model";
@@ -24,19 +25,7 @@ Notifications.setNotificationHandler({
   },
 });
 export async function allowAlerts() {
-  if (Platform.OS === "android")
-    await Notifications.setNotificationChannelAsync("focus-permission", {
-      name: "Focus permission setup",
-      importance: Notifications.AndroidImportance.DEFAULT,
-    });
-  const permission = await Notifications.requestPermissionsAsync();
-  if (
-    !permission.granted &&
-    permission.ios?.status !== Notifications.IosAuthorizationStatus.PROVISIONAL
-  )
-    throw new Error(
-      "Notifications are not allowed. Enable them in device Settings, or use Focus without background alerts.",
-    );
+  await ensureNotificationAccess();
 }
 async function clearPendingAlerts(includeImmediate = false) {
   const pending = await Notifications.getAllScheduledNotificationsAsync();

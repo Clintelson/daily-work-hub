@@ -1,7 +1,8 @@
 import { Colors } from "@/constants/theme";
 import { fixtureModes, type FixtureMode } from "@/lib/fixtures";
 import { router } from "expo-router";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import { Action } from "./controls";
 const labels = {
   live: "My data",
@@ -12,7 +13,20 @@ const labels = {
   huge: "1,000 rows",
 };
 export function DevFixtures({ mode }: { mode: FixtureMode }) {
-  if (!__DEV__) return null;
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  useEffect(() => {
+    const show = Keyboard.addListener("keyboardDidShow", () =>
+      setKeyboardOpen(true),
+    );
+    const hide = Keyboard.addListener("keyboardDidHide", () =>
+      setKeyboardOpen(false),
+    );
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  if (!__DEV__ || keyboardOpen) return null;
   return (
     <View style={styles.outer}>
       <ScrollView horizontal contentContainerStyle={styles.track}>

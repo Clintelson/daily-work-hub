@@ -12,10 +12,14 @@ export function TaskRow({
   task,
   today,
   review = false,
+  expanded = false,
+  onExpand,
 }: {
   task: Task;
   today: string;
   review?: boolean;
+  expanded?: boolean;
+  onExpand?: () => void;
 }) {
   const hub = useHub(),
     t = useTheme();
@@ -115,61 +119,75 @@ export function TaskRow({
             </ThemedText>
           ) : null}
         </View>
-        <View style={[ui.row, styles.actions]}>
-          {review && !done ? (
-            <>
-              <Action
-                compact
-                label='Carry to tomorrow'
-                disabled={hub.busy}
-                onPress={() =>
-                  save({
-                    planned: tomorrow(today),
-                    priority: "",
-                    reviewedOn: today,
-                  })
-                }
-              />
-              <Action
-                compact
-                label='Leave for later'
-                disabled={hub.busy}
-                onPress={() =>
-                  save({ planned: "", priority: "", reviewedOn: today })
-                }
-              />
-            </>
-          ) : (
-            <>
-              <Action
-                compact
-                label={
-                  task.priority === today ? "Unpin priority" : "Make priority"
-                }
-                selected={task.priority === today}
-                disabled={hub.busy}
-                onPress={() =>
-                  save({
-                    priority: task.priority === today ? "" : today,
-                    reviewedOn: task.priority === today ? task.reviewedOn : "",
-                  })
-                }
-              />
-              {!done && (
+        {!review && (
+          <View style={styles.more}>
+            <Action
+              compact
+              label='More'
+              accessibilityLabel={`Actions for ${task.title}`}
+              expanded={expanded}
+              onPress={() => onExpand?.()}
+            />
+          </View>
+        )}
+        {(expanded || (review && !done)) && (
+          <View style={[ui.row, styles.actions]}>
+            {review && !done ? (
+              <>
                 <Action
                   compact
-                  label='Focus'
+                  label='Carry to tomorrow'
+                  disabled={hub.busy}
                   onPress={() =>
-                    router.push({
-                      pathname: "/focus",
-                      params: { task: task.id },
+                    save({
+                      planned: tomorrow(today),
+                      priority: "",
+                      reviewedOn: today,
                     })
                   }
                 />
-              )}
-            </>
-          )}
-        </View>
+                <Action
+                  compact
+                  label='Leave for later'
+                  disabled={hub.busy}
+                  onPress={() =>
+                    save({ planned: "", priority: "", reviewedOn: today })
+                  }
+                />
+              </>
+            ) : (
+              <>
+                <Action
+                  compact
+                  label={
+                    task.priority === today ? "Unpin priority" : "Make priority"
+                  }
+                  selected={task.priority === today}
+                  disabled={hub.busy}
+                  onPress={() =>
+                    save({
+                      priority: task.priority === today ? "" : today,
+                      reviewedOn:
+                        task.priority === today ? task.reviewedOn : "",
+                    })
+                  }
+                />
+                {!done && (
+                  <Action
+                    compact
+                    label='Focus'
+                    onPress={() =>
+                      router.push({
+                        pathname: "/focus",
+                        params: { task: task.id },
+                      })
+                    }
+                  />
+                )}
+              </>
+            )}
+          </View>
+        )}
       </View>
     </View>
   );
@@ -186,6 +204,7 @@ export function TaskList({
 }) {
   // ponytail: paginate 30 rows to bound native layout work; use FlatList if continuous scrolling becomes necessary.
   const [page, setPage] = useState(0);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const total = Math.max(1, Math.ceil(tasks.length / 30)),
     safePage = Math.min(page, total - 1);
   useEffect(() => {
@@ -194,7 +213,16 @@ export function TaskList({
   return (
     <View>
       {tasks.slice(safePage * 30, safePage * 30 + 30).map((task) => (
-        <TaskRow key={task.id} task={task} today={today} review={review} />
+        <TaskRow
+          key={task.id}
+          task={task}
+          today={today}
+          review={review}
+          expanded={expandedId === task.id}
+          onExpand={() =>
+            setExpandedId(expandedId === task.id ? null : task.id)
+          }
+        />
       ))}
       {total > 1 && (
         <View style={[ui.row, styles.pagination]}>
@@ -247,12 +275,12 @@ const styles = StyleSheet.create({
     minWidth: 0,
     flexDirection: "row",
     flexWrap: "wrap",
-    columnGap: 16,
+    columnGap: 8,
     rowGap: 4,
     alignItems: "flex-start",
   },
   description: {
-    flexBasis: 240,
+    flexBasis: 0,
     flexGrow: 1,
     flexShrink: 1,
     minWidth: 0,
@@ -261,6 +289,7 @@ const styles = StyleSheet.create({
   titleTarget: { minHeight: 48, justifyContent: "center", gap: 6 },
   title: { fontSize: 16, lineHeight: 25, fontWeight: "500", flexShrink: 1 },
   waiting: { lineHeight: 22 },
-  actions: { flexShrink: 1, minWidth: 0 },
+  more: { marginLeft: "auto", width: 64, flexShrink: 0 },
+  actions: { flexBasis: "100%", flexShrink: 1, minWidth: 0 },
   pagination: { marginTop: 24 },
 });

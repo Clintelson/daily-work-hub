@@ -1,3 +1,4 @@
+import { NotificationAccessCard } from "@/components/planner/notification-access-card";
 import { Action, SectionTitle, ui } from "@/components/planner/controls";
 import { FocusConfig, Preference } from "@/components/planner/focus-config";
 import { Workspace } from "@/components/planner/workspace";
@@ -5,6 +6,7 @@ import { ThemedText } from "@/components/themed-text";
 import { useHub } from "@/hooks/use-hub";
 import { allowAlerts } from "@/lib/focus-alerts";
 import { validateSettings, type Settings } from "@/lib/model";
+import { allowTaskReminders } from "@/lib/task-reminders";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Platform, View } from "react-native";
@@ -35,6 +37,12 @@ function SettingsForm({ initial }: { initial: Settings }) {
       validateSettings(settings);
       setSaving(true);
       setError("");
+      if (
+        hub.mode === "live" &&
+        Platform.OS !== "web" &&
+        settings.reminder !== "None"
+      )
+        await allowTaskReminders();
       if (settings.alerts && !initial.alerts) await allowAlerts();
       await hub.change((s) => ({ ...s, settings }));
       close();
@@ -46,6 +54,7 @@ function SettingsForm({ initial }: { initial: Settings }) {
   };
   return (
     <View style={ui.column}>
+      <NotificationAccessCard />
       <SectionTitle title='Planning' />
       <ThemedText>Start of the week</ThemedText>
       <View style={ui.row}>
@@ -58,20 +67,22 @@ function SettingsForm({ initial }: { initial: Settings }) {
           />
         ))}
       </View>
-      <ThemedText>Default reminder preference</ThemedText>
+      <ThemedText>Task due-date reminders</ThemedText>
       <View style={ui.row}>
         {(["None", "On due date"] as const).map((reminder) => (
           <Action
             key={reminder}
-            label={reminder}
+            label={reminder === "None" ? "Off" : "Today and tomorrow"}
+            disabled={Platform.OS === "web" && reminder !== "None"}
             selected={settings.reminder === reminder}
             onPress={() => setSettings({ ...settings, reminder })}
           />
         ))}
       </View>
       <ThemedText type='small' themeColor='textSecondary'>
-        Task reminders are not scheduled in this version. This preference is
-        saved for later.
+        {Platform.OS === "web"
+          ? "Background task reminders are available in the native app. Check the Calendar view here for due dates."
+          : "At 9:00 AM local time, a private summary lists how many tasks are due today or tomorrow. Reminders are scheduled for the next 12 relevant mornings and refreshed when you reopen the app. Tasks added after 9:00 AM do not trigger a late reminder for that morning. Device settings can delay delivery."}
       </ThemedText>
       <SectionTitle title='Focus defaults' />
       <FocusConfig value={settings} onChange={setSettings} />

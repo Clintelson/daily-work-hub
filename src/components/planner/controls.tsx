@@ -1,3 +1,4 @@
+import { isLoaded } from "expo-font";
 import { useState } from "react";
 import {
   Pressable,
@@ -17,6 +18,8 @@ type ActionProps = {
   disabled?: boolean;
   selected?: boolean;
   compact?: boolean;
+  expanded?: boolean;
+  accessibilityLabel?: string;
 };
 
 export function Action({
@@ -26,14 +29,18 @@ export function Action({
   disabled = false,
   selected,
   compact = false,
+  expanded,
+  accessibilityLabel,
 }: ActionProps) {
   const t = useTheme();
   const [hovered, setHovered] = useState(false);
   return (
     <Pressable
       accessibilityRole='button'
+      accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{
         disabled,
+        ...(expanded === undefined ? {} : { expanded }),
         ...(selected === undefined ? {} : { selected }),
       }}
       disabled={disabled}
@@ -113,6 +120,7 @@ export function Field({
         }}
         style={[
           styles.input,
+          { fontFamily: isLoaded("LatoRegular") ? "LatoRegular" : undefined },
           {
             color: t.text,
             backgroundColor: t.backgroundElement,

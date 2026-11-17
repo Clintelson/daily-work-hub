@@ -1,4 +1,11 @@
-import { Platform, StyleSheet, Text, type TextProps } from "react-native";
+import { isLoaded } from "expo-font";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  type TextProps,
+  type TextStyle,
+} from "react-native";
 
 import { Fonts, ThemeColor } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
@@ -23,6 +30,17 @@ export function ThemedText({
   ...rest
 }: ThemedTextProps) {
   const theme = useTheme();
+  const resolved: TextStyle = StyleSheet.flatten([styles[type], style]) ?? {};
+  const bold =
+    resolved.fontWeight === "bold" ||
+    Number(resolved?.fontWeight ?? 400) >= 600;
+  const font =
+    type === "code" || !isLoaded(bold ? "LatoBold" : "LatoRegular")
+      ? undefined
+      : {
+          fontFamily: bold ? "LatoBold" : "LatoRegular",
+          fontWeight: "normal" as const,
+        };
 
   return (
     <Text
@@ -33,6 +51,7 @@ export function ThemedText({
         },
         styles[type],
         style,
+        font,
       ]}
       {...rest}
     />

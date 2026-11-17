@@ -21,6 +21,10 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "VIBRATE"
+      ],
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
       ]
     },
     "web": {
@@ -29,16 +33,19 @@
     },
     "plugins": [
       "expo-router",
+      "./plugins/with-animated-splash.js",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#F1EDE7",
+          "image": "./assets/branding/dailyWorkHubLogo.png",
+          "imageWidth": 240,
+          "resizeMode": "contain"
         }
       ],
       "expo-sqlite",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,3 +1,4 @@
+import { isLoaded } from "expo-font";
 import { useTheme } from "@/hooks/use-theme";
 import { NativeTabs } from "expo-router/native-tabs";
 export default function AppTabs() {
@@ -9,8 +10,8 @@ export default function AppTabs() {
       backgroundColor={t.backgroundElement}
       tintColor={t.accent}
       labelStyle={{
-        default: { color: t.textSecondary },
-        selected: { color: t.accent },
+        default: { color: t.textSecondary, fontFamily: isLoaded("LatoRegular") ? "LatoRegular" : undefined },
+        selected: { color: t.accent, fontFamily: isLoaded("LatoBold") ? "LatoBold" : undefined },
       }}
       iconColor={{ default: t.textSecondary, selected: t.accent }}
       indicatorColor={t.backgroundSelected}

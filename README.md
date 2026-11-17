@@ -27,7 +27,7 @@ Native Focus requests landscape through the Router stack and hides system bars w
 
 Enable background Focus alerts in Settings to request local notification permission. Sound on native uses these alerts; foreground vibration can work without notification permission. Up to 48 upcoming transitions are scheduled, replenished when the app returns to the foreground. OS settings, power management, and notification permissions can delay or prevent alerts. Exact-alarm permission is not requested. Web sound is foreground-only and browser-dependent. Use OS Focus/Do Not Disturb yourself to silence other apps while allowing Daily Work Hub. The app does not control other apps' notifications.
 
-Task reminder preferences are saved, but task reminders are deferred and labeled accordingly.
+Task due-date reminders are opt-in in Settings. Native builds schedule a private count-only summary at 09:00 local time for tasks due that day or tomorrow. The next 12 relevant mornings are scheduled, leaving room for Focus notifications. Edits, completion, and foreground/reopen reconcile reminders; disabling the preference cancels task reminders only. Morning times already passed are not rescheduled as late alerts. Background delivery follows OS notification policy. Web provides the in-app calendar without background reminders. This feature does not write to an external/device calendar.
 
 ## Offline web export
 
@@ -39,7 +39,7 @@ Serve `dist/` from a static host at the origin root over HTTPS (localhost is als
 
 ## Development fixtures and checks
 
-Development builds have an isolated fixture switch: My data, Demo data, Worst case, Empty, One, and 1,000 rows. Open `/?data=worst` to inspect realistic long titles, multilingual text and missing metadata; `/?data=huge` exercises pagination. These fixtures never seed persistent user data. Production ignores the fixture URL parameter.
+Normal app launches always use real local data. The My data/Demo/Worst case toolbar and URL-based preview selection have been removed. Historical fixture source remains isolated from the app entry point and never seeds storage.
 
 ```sh
 npx tsc --noEmit
@@ -49,3 +49,17 @@ npm run lint
 ESLint is not configured. Expo lint may try installing it automatically; do not accept that silently. No automated tests were added or run, following the repository instructions.
 
 See [verification and stress review](docs/verification-and-stress-review.md) for actual results and outstanding device/browser checks.
+
+## Task list and typography
+
+Tasks are grouped by Overdue, Today, Tomorrow, Later, and No date. Completed tasks and Today’s waiting list collapse; each row keeps its status and title visible, with priority/Focus actions behind More. The Tasks screen has a weekly Calendar view that follows the saved week start. Pinned priorities remain visible, including completed priorities, to keep the existing three-priority budget understandable.
+
+The shared workspace has native KeyboardAvoidingView behavior and a measured screen offset; real-device keyboard checks are still needed. Lato regular/bold are bundled in assets/fonts under the included OFL license and loaded through the existing expo-font module. Normal use does not fetch fonts from a network.
+
+## Branding and notification access
+
+The app header uses assets/branding/dailyWorkHubLogo.png. Android 12+ uses a native animated vector recreation of the logo's pulse/lift on the cream background sampled from flashscreen.gif. Older Android versions receive the static vector. Android opens the planner directly after that splash, without a second GIF intro. The local plugin in plugins/with-animated-splash.js generates these resources during prebuild; keep it before expo-splash-screen because SDK 58 executes styles mods in reverse registration order. Rebuild and cold-launch an installed release/preview APK to assess it; Expo Go's own loader cannot show this native customization. The OS can shorten playback when the app is ready.
+
+iOS retains the static native logo followed by the original four-second GIF; web plays the GIF at startup. Those intros retain Skip, a seven-second decoder watchdog and a static-logo reduced-motion fallback. Native Android motion follows system animator settings and needs device verification. No build signing, EAS profile, permission or dependency changes are part of this splash update. See docs/branding-and-notification-access.md for verification and rollback.
+
+Today provides a notification access card. Allow notifications requests actual OS consent, then enables existing private due-date summaries and Focus alerts. Denial keeps task planning available, and a blocked permission offers Open device Settings. Settings shows access separately from feature preferences, so granting permission there does not discard unsaved edits. Returning from system Settings refreshes access. Only notifications need this OS permission; storage and the in-app calendar need no calendar, contacts, location, microphone or file-access prompts. No push tokens or remote service is used.
