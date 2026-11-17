@@ -1,3 +1,6 @@
+# daily-work-hub
+An offline-first personal planner for capturing tasks, setting daily priorities, and tracking follow-ups on Android and iOS.
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
